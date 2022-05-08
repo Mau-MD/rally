@@ -9,6 +9,7 @@
 	import { toast } from '@zerodevx/svelte-toast';
 	import { onMount } from 'svelte';
 	import { Circle2 } from 'svelte-loading-spinners';
+	import { v4 as uuid } from 'uuid';
 
 	const contest = parseInt($page.params.contest);
 
@@ -16,8 +17,8 @@
 	let started = false;
 
 	$: {
-		if (started && $team.id !== -1) {
-			goto(`/pista/${tokens[contest][($team.id % 2) + 1 + $team.solved]}`);
+		if (started && $team.teamId !== '') {
+			goto(`/pista/${$team.teamId}`);
 		}
 	}
 
@@ -47,14 +48,22 @@
 			return;
 		}
 
-		const res = await supabase.from<ITeams>('teams').insert([{ name, contest }]);
+		const res = await supabase
+			.from<ITeams>('teams')
+			.insert([{ name, contest, hasSolvedYet: true }]);
 
 		if (!res || !res.data) {
 			toast.push('Hubo un error al crear el equipo. Vuelve a intentarlo');
 			return;
 		}
 
-		team.set({ id: res.data[0].id, name: res.data[0].name, solved: -1, timeStarted: new Date() });
+		team.set({
+			id: res.data[0].id,
+			name: res.data[0].name,
+			solved: -1,
+			timeStarted: new Date(),
+			teamId: res.data[0].teamId
+		});
 	}
 </script>
 

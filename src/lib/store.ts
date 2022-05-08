@@ -10,6 +10,7 @@ const storage = <T>(key: string, initValue: T): Writable<T> => {
 	if (storedValueStr != null) store.set(JSON.parse(storedValueStr));
 
 	store.subscribe((val) => {
+		//@ts-ignore
 		if ([null, undefined].includes(val)) {
 			localStorage.removeItem(key);
 		} else {
@@ -28,11 +29,22 @@ const storage = <T>(key: string, initValue: T): Writable<T> => {
 	return store;
 };
 
-export const team = storage('team', {
+export const team = storage<TeamStore>('team', {
 	id: -1,
+	teamId: '',
 	name: '',
 	solved: -1,
-	timeStarted: new Date()
+	timeStarted: new Date(),
+	timeEnd: undefined
 });
+
+interface TeamStore {
+	id: number;
+	teamId: string;
+	name: string;
+	solved: number;
+	timeStarted: Date;
+	timeEnd: Date | undefined;
+}
 
 export default storage;

@@ -5,19 +5,25 @@ import supabase from '$lib/supabase';
 import fs from 'fs';
 
 export const get: RequestHandler = async ({ params }): Promise<{ body: any }> => {
-	const data = encryptor.decrypt<string>(decodeURIComponent(params.id));
+	const team = await supabase.from<ITeams>('teams').select('*').eq('teamId', params.id);
 
-	if (!data) return { body: { error: 'Invalid ID' } };
+	if (!team || !team.data) {
+		return {
+			body: {
+				response: 404
+			}
+		};
+	}
+	const teamData = team.data[0];
+	// const clueIdx = (team.data[0].id % 2) + team.data[0].solved + 1;
 
-	const contest = parseInt(data.split('-')[0]);
-	const set = parseInt(data.split('-')[1]);
+	const clueIdx = ((teamData.solved + (teamData.id % 2) + 1) % 2) + 1;
 
-	console.log(contest, set);
 	const clues = await supabase
 		.from<IClue>('clues')
 		.select('*')
-		.eq('set', set)
-		.eq('contest', contest);
+		.eq('set', clueIdx)
+		.eq('contest', team.data[0].contest);
 
 	if (!clues || !clues.data) {
 		return {
@@ -29,7 +35,8 @@ export const get: RequestHandler = async ({ params }): Promise<{ body: any }> =>
 
 	return {
 		body: {
-			clues: clues.data
+			clues: clues.data,
+			team: team.data[0]
 		}
 	};
 };

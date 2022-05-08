@@ -1,5 +1,16 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
+	import { onMount } from 'svelte';
+
 	export let clues: IClue[];
+	export let team: ITeams;
+
+	onMount(() => {
+		if (team.timeEnd) {
+			goto('/finish');
+		}
+	});
 </script>
 
 {#if clues}

@@ -13,9 +13,11 @@ interface ITeams {
 	name: string;
 	solved: number;
 	timeStarted: string;
-	timeFinished: string;
+	timeEnd: string | Date;
 	created_at: Date;
 	contest: number;
+	teamId: string;
+	hasSolvedYet: boolean;
 }
 
 interface IAnswer {

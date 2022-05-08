@@ -5,9 +5,11 @@ specifiers:
   '@sveltejs/adapter-auto': next
   '@sveltejs/kit': next
   '@types/crypto-js': ^4.1.1
+  '@types/uuid': ^8.3.4
   '@zerodevx/svelte-toast': ^0.7.1
   autoprefixer: ^10.4.7
   crypto-js: ^4.1.1
+  date-fns: ^2.28.0
   postcss: ^8.4.13
   prettier: ^2.5.1
   prettier-plugin-svelte: ^2.5.0
@@ -19,11 +21,15 @@ specifiers:
   tailwindcss: ^3.0.24
   tslib: ^2.3.1
   typescript: ~4.6.2
+  uuid: ^8.3.2
 
 dependencies:
   '@supabase/supabase-js': 1.35.2
+  '@types/uuid': 8.3.4
   crypto-js: 4.1.1
+  date-fns: 2.28.0
   simple-encryptor: 4.0.0
+  uuid: 8.3.2
 
 devDependencies:
   '@sveltejs/adapter-auto': 1.0.0-next.40
@@ -221,6 +227,10 @@ packages:
       '@types/node': 17.0.31
     dev: true
 
+  /@types/uuid/8.3.4:
+    resolution: {integrity: sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==}
+    dev: false
+
   /@zerodevx/svelte-toast/0.7.1:
     resolution: {integrity: sha512-JxyjPlpc3IzwyHLGbU5pDPW68HM1o7FjiSWmm9SIig7NuuBFIqoJkVt9CYr6toAXzi5sLBgu27hT1NntKbKcmA==}
     dev: true
@@ -379,6 +389,11 @@ packages:
     dependencies:
       es5-ext: 0.10.61
       type: 1.2.0
+    dev: false
+
+  /date-fns/2.28.0:
+    resolution: {integrity: sha512-8d35hViGYx/QH0icHYCeLmsLmMUheMmTyV9Fcm6gvNwdw31yXXH+O85sOBJ+OLnLQMKZowvpKb6FgMIQjcpvQw==}
+    engines: {node: '>=0.11'}
     dev: false
 
   /debug/2.6.9:
@@ -1355,6 +1370,11 @@ packages:
   /util-deprecate/1.0.2:
     resolution: {integrity: sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=}
     dev: true
+
+  /uuid/8.3.2:
+    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    hasBin: true
+    dev: false
 
   /vite/2.9.8:
     resolution: {integrity: sha512-zsBGwn5UT3YS0NLSJ7hnR54+vUKfgzMUh/Z9CxF1YKEBVIe213+63jrFLmZphgGI5zXwQCSmqIdbPuE8NJywPw==}

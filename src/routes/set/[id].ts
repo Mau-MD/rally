@@ -5,28 +5,26 @@ import supabase from '$lib/supabase';
 import fs from 'fs';
 
 export const get: RequestHandler = async ({ params }): Promise<{ body: any }> => {
-	// const a = {};
-	// for (let c = 1; c <= 3; c++) {
-	// 	a[c] = {};
-	// 	for (let i = 1; i <= 9; i++) {
-	// 		a[c][i] = encodeURIComponent(encryptor.encrypt(`${c}-${i}`));
-	// 	}
-	// }
-	// fs.writeFileSync('clueTokens.json', JSON.stringify(a, null, 2));
+	const team = await supabase.from<ITeams>('teams').select('*').eq('teamId', params.id);
 
-	const data = encryptor.decrypt<string>(decodeURIComponent(params.id));
+	if (!team || !team.data) {
+		return {
+			body: {
+				response: 404
+			}
+		};
+	}
 
-	if (!data) return { body: { error: 'Invalid ID' } };
+	console.log();
+	const teamData = team.data[0];
 
-	const contest = parseInt(data.split('-')[0]);
-	const set = data.split('-')[1];
+	const setIdx = ((teamData.solved + (teamData.id % 2) + 1) % 2) + 1;
 
-	console.log(contest, set);
 	const questions = await supabase
 		.from<IQuestion>('questions')
 		.select('*')
-		.eq('set', set)
-		.eq('contest', contest);
+		.eq('set', setIdx)
+		.eq('contest', team.data[0].contest);
 
 	if (!questions || !questions.data) {
 		return {
@@ -38,7 +36,8 @@ export const get: RequestHandler = async ({ params }): Promise<{ body: any }> =>
 
 	return {
 		body: {
-			questions: questions.data
+			questions: questions.data,
+			team: team.data[0]
 		}
 	};
 };
