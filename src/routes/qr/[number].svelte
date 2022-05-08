@@ -3,6 +3,7 @@
 
 	import { team } from '$lib/store';
 	import supabase from '$lib/supabase';
+	import { getIdx } from '$lib/util';
 	import { toast } from '@zerodevx/svelte-toast';
 	import { onMount } from 'svelte';
 
@@ -37,7 +38,7 @@
 
 		// quiero valores 1 y 2
 
-		const currIdx = ((teamData.solved + (teamData.id % 2) + 1) % 2) + 1;
+		const currIdx = getIdx(teamData.solved, teamData.id);
 		console.log(currIdx);
 
 		if (currIdx.toString() !== id) {

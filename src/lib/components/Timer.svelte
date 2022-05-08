@@ -36,6 +36,6 @@
 	}
 </script>
 
-<div class="font-bold text-center text-4xl mb-[50px]">
+<div class="font-bold text-center text-4xl mt-[50px]">
 	{setLeadingZero(hours)}:{setLeadingZero(minutes)}:{setLeadingZero(seconds)}
 </div>

@@ -3,6 +3,7 @@ import { encryptor } from '$lib/crypto';
 import supabase from '$lib/supabase';
 
 import fs from 'fs';
+import { getIdx } from '$lib/util';
 
 export const get: RequestHandler = async ({ params }): Promise<{ body: any }> => {
 	const team = await supabase.from<ITeams>('teams').select('*').eq('teamId', params.id);
@@ -18,7 +19,7 @@ export const get: RequestHandler = async ({ params }): Promise<{ body: any }> =>
 	console.log();
 	const teamData = team.data[0];
 
-	const setIdx = ((teamData.solved + (teamData.id % 2) + 1) % 2) + 1;
+	const setIdx = getIdx(teamData.solved, teamData.id);
 
 	const questions = await supabase
 		.from<IQuestion>('questions')

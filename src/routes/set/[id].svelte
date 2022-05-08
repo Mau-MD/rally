@@ -9,6 +9,7 @@
 	import supabase from '$lib/supabase';
 	import { onMount } from 'svelte';
 	import { team as _team } from '$lib/store';
+	import { MAX_PROBLEMS } from '$lib/util';
 
 	export let team: ITeams;
 	export let questions: IQuestion[];
@@ -39,11 +40,11 @@
 		}
 
 		if (incorrectAnswer) {
-			toast.push('Al menos una de las preguntas es incorrecta');
+			toast.push('Al menos una de las respuestas es incorrecta');
 			return;
 		}
 
-		if (team.solved + 1 >= 2) {
+		if (team.solved + 1 >= MAX_PROBLEMS) {
 			// Terminaste
 			await supabase
 				.from<ITeams>('teams')
