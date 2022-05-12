@@ -6,6 +6,7 @@ interface IQuestion {
 	correctAnswer: number;
 	set: number;
 	contest: number;
+	isOpenAnswer: string[];
 }
 
 interface ITeams {

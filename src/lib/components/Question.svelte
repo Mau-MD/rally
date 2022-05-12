@@ -8,12 +8,14 @@
 
 	let selectedIdx: number;
 
-	function handleChange(idx: number) {
-		if (selectedIdx === idx) {
-			selectedIdx = -1;
-			return;
+	function handleChange(idx: number | string) {
+		if (typeof idx === 'number') {
+			if (selectedIdx === idx) {
+				selectedIdx = -1;
+				return;
+			}
+			selectedIdx = idx;
 		}
-		selectedIdx = idx;
 		dispatch('change', { idx });
 	}
 </script>
@@ -23,14 +25,21 @@
 	<p class="text-center mb-4">
 		{question.question}
 	</p>
-	{#each question.answers as answer (answer.id)}
-		<div
-			on:click={() => handleChange(answer.id)}
-			class={`py-4 px-4 border-2 rounded bg-white/5 transition-all mb-4 ${
-				selectedIdx === answer.id && 'border-l-8 bg-white/10'
-			}`}
-		>
-			{answer.answer}
-		</div>
-	{/each}
+	{#if question.isOpenAnswer}
+		<input
+			class="py-4 px-4 border-2 rounded bg-white/5 transition-all mb-4 w-full"
+			on:change={(e) => handleChange(e.currentTarget.value)}
+		/>
+	{:else}
+		{#each question.answers as answer (answer.id)}
+			<div
+				on:click={() => handleChange(answer.id)}
+				class={`py-4 px-4 border-2 rounded bg-white/5 transition-all mb-4 ${
+					selectedIdx === answer.id && 'border-l-8 bg-white/10'
+				}`}
+			>
+				{answer.answer}
+			</div>
+		{/each}
+	{/if}
 </div>

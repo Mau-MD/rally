@@ -10,12 +10,17 @@
 	import { onMount } from 'svelte';
 	import { team as _team } from '$lib/store';
 	import { MAX_PROBLEMS } from '$lib/util';
+	import { browser } from '$app/env';
 
 	export let team: ITeams;
 	export let questions: IQuestion[];
 
+	let timeLeft: number = -1;
+	let timer: NodeJS.Timer;
+	const TIME_PENALTY = 20;
+
 	interface ISelected {
-		[key: number]: number;
+		[key: number]: number | string;
 	}
 
 	let selected: ISelected = {};
@@ -24,6 +29,13 @@
 		if (team.hasSolvedYet) {
 			goto(`/pista/${team.teamId}`);
 		}
+
+		const lastSubmittedDate = localStorage.getItem(`timeLeft-${team.teamId}`);
+		if (!lastSubmittedDate) return;
+
+		const diff = Math.floor((new Date().getTime() - parseInt(lastSubmittedDate)) / 1000);
+		timeLeft = Math.max(TIME_PENALTY - diff, -1);
+		setTimer();
 	});
 
 	async function submitAnswers() {
@@ -34,13 +46,23 @@
 				return;
 			}
 
-			if (selected[question.id] !== question.correctAnswer) {
-				incorrectAnswer = true;
+			if (question.isOpenAnswer) {
+				const answer = selected[question.id] as string;
+				if (!question.isOpenAnswer.map((s) => s.toLowerCase()).includes(answer.toLowerCase())) {
+					incorrectAnswer = true;
+				}
+			} else {
+				if (selected[question.id] !== question.correctAnswer) {
+					incorrectAnswer = true;
+				}
 			}
 		}
 
 		if (incorrectAnswer) {
 			toast.push('Al menos una de las respuestas es incorrecta');
+			timeLeft = TIME_PENALTY;
+			localStorage.setItem(`timeLeft-${team.teamId}`, '' + new Date().getTime());
+			setTimer();
 			return;
 		}
 
@@ -67,15 +89,30 @@
 		//@ts-ignore
 		goto(`/pista/${team.teamId}`);
 	}
+
+	function setTimer() {
+		timer = setInterval(() => {
+			timeLeft -= 1;
+		}, 1000);
+	}
+
+	$: {
+		timeLeft < 0 && clearInterval(timer);
+	}
 </script>
 
 {#if !team.hasSolvedYet}
-	<div
-		on:click={submitAnswers}
-		class="fixed bottom-4 bg-green-500 left-4 right-4 px-4 py-3 rounded shadow-lg text-center"
-	>
-		Subir
-	</div>
+	{#if browser}
+		<div
+			on:click={() => timeLeft === -1 && submitAnswers()}
+			class={`fixed bottom-4 ${
+				timeLeft !== -1 ? 'bg-red-500' : 'bg-green-500'
+			} left-4 right-4 px-4 py-3 rounded shadow-lg text-center`}
+			disabled={timeLeft !== -1}
+		>
+			{timeLeft == -1 ? 'Subir' : `Tienes que esperar ${timeLeft} segundos`}
+		</div>
+	{/if}
 	<div class="mx-auto mb-[100px] mt-[50px]">
 		<h1 class="text-center text-4xl mb-[50px]">Preguntas</h1>
 		{#each questions as question, idx (question.id)}

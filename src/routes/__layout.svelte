@@ -6,6 +6,7 @@
 	import { onMount } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
 	import { differenceInSeconds } from 'date-fns';
+	import bg from '$lib/assets/hero.jpg';
 
 	let seconds = 0,
 		minutes = 0,
@@ -24,6 +25,7 @@
 
 <div
 	class="w-[100vw] min-h-[100vh] flex justify-center eitems-center flex-col bg-slate-900 text-white"
+	style="background-image: url('{bg}'); background-size: cover; background-position: right;"
 >
 	{#if $team && $team.solved >= 0 && $team.timeStarted && !$team.timeEnd}
 		<div class="font-bold text-center">
