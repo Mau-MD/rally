@@ -9,7 +9,7 @@
 
 		return {
 			props: {
-				contests: contests.data
+				contests: contests.data?.sort((a, b) => b.contest - a.contest)
 			}
 		};
 	};

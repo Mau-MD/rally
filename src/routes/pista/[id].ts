@@ -4,6 +4,7 @@ import supabase from '$lib/supabase';
 
 import fs from 'fs';
 import { getIdx } from '$lib/util';
+import { numToBinary } from '$lib/bincrypt';
 
 export const get: RequestHandler = async ({ params }): Promise<{ body: any }> => {
 	const team = await supabase.from<ITeams>('teams').select('*').eq('teamId', params.id);

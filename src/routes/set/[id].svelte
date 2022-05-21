@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { numToBinary } from '$lib/bincrypt';
 	import { goto } from '$app/navigation';
 
 	import { page } from '$app/stores';
@@ -80,14 +81,16 @@
 
 		toast.push('Felicidades, terminaste el set de preguntas');
 
-		// Primero tengo que marcar que el set esta terminado
-		await supabase
-			.from<ITeams>('teams')
-			.update({ hasSolvedYet: true, solved: team.solved + 1 })
-			.eq('teamId', team.teamId);
+		goto(`/photo/${team.teamId}SC${numToBinary(team.solved, '@', '$')}`);
 
-		//@ts-ignore
-		goto(`/pista/${team.teamId}`);
+		// Primero tengo que marcar que el set esta terminado
+		// await supabase
+		// 	.from<ITeams>('teams')
+		// 	.update({ hasSolvedYet: true, solved: team.solved + 1 })
+		// 	.eq('teamId', team.teamId);
+
+		// //@ts-ignore
+		// goto(`/pista/${team.teamId}`);
 	}
 
 	function setTimer() {
