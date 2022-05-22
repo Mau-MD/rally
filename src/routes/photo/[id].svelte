@@ -84,7 +84,7 @@
 	}
 </script>
 
-<div class="flex items-center flex-col gap-8">
+<div class="flex items-center flex-col gap-8 my-8">
 	<p class="text-center">Para poder continuar, debes de subir una selfie de todo el equipo :)</p>
 	<!-- svelte-ignore a11y-media-has-caption -->
 	{#if !photoURL}

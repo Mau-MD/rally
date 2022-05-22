@@ -8,6 +8,7 @@ import { getIdx } from '$lib/util';
 export const get: RequestHandler = async ({ params }): Promise<{ body: any }> => {
 	const team = await supabase.from<ITeams>('teams').select('*').eq('teamId', params.id);
 
+	console.log('HI');
 	if (!team || !team.data) {
 		return {
 			body: {
@@ -35,6 +36,7 @@ export const get: RequestHandler = async ({ params }): Promise<{ body: any }> =>
 		};
 	}
 
+	console.log(questions.data);
 	return {
 		body: {
 			questions: questions.data,

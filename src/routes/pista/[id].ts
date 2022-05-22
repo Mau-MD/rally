@@ -20,11 +20,8 @@ export const get: RequestHandler = async ({ params }): Promise<{ body: any }> =>
 	// const clueIdx = (team.data[0].id % 2) + team.data[0].solved + 1;
 	const clueIdx = getIdx(teamData.solved, teamData.id);
 
-	const clues = await supabase
-		.from<IClue>('clues')
-		.select('*')
-		.eq('set', clueIdx)
-		.eq('contest', team.data[0].contest);
+	const clues = await supabase.from<IClue>('clues').select('*').eq('set', clueIdx);
+	// .eq('contest', team.data[0].contest);
 
 	if (!clues || !clues.data) {
 		return {
