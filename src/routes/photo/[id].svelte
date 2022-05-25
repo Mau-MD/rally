@@ -5,6 +5,8 @@
 	import { onMount } from 'svelte';
 	import { Circle2 } from 'svelte-loading-spinners';
 	import { toast } from '@zerodevx/svelte-toast';
+	import { team as _team } from '$lib/store';
+	import { MAX_PROBLEMS } from '$lib/util';
 
 	export let team: ITeams;
 	export let response: number;
@@ -75,6 +77,18 @@
 	}
 
 	async function nextClue() {
+		if (team.solved + 1 >= MAX_PROBLEMS) {
+			// Terminaste
+			await supabase
+				.from<ITeams>('teams')
+				.update({ hasSolvedYet: true, solved: team.solved + 1, timeEnd: new Date() })
+				.eq('teamId', team.teamId);
+
+			_team.set({ ...$_team, timeEnd: new Date() });
+			goto('/finish');
+			return;
+		}
+
 		await supabase
 			.from<ITeams>('teams')
 			.update({ hasSolvedYet: true, solved: team.solved + 1 })
@@ -88,7 +102,7 @@
 	<p class="text-center">Para poder continuar, debes de subir una selfie de todo el equipo :)</p>
 	<!-- svelte-ignore a11y-media-has-caption -->
 	{#if !photoURL}
-		<video class="bg-black rounded-md" bind:this={source} />
+		<video class="bg-black rounded-md" bind:this={source} playsinline />
 	{:else}
 		<img src={photoURL} class="bg-black rounded-md" alt="selfie" />
 	{/if}

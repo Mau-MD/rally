@@ -12,6 +12,7 @@
 	import { team as _team } from '$lib/store';
 	import { MAX_PROBLEMS } from '$lib/util';
 	import { browser } from '$app/env';
+	import { Circle2 } from 'svelte-loading-spinners';
 
 	export let team: ITeams;
 	export let questions: IQuestion[];
@@ -49,7 +50,9 @@
 
 			if (question.isOpenAnswer) {
 				const answer = selected[question.id] as string;
-				if (!question.isOpenAnswer.map((s) => s.toLowerCase()).includes(answer.toLowerCase())) {
+				if (
+					!question.isOpenAnswer.map((s) => s.toLowerCase()).includes(answer.trim().toLowerCase())
+				) {
 					incorrectAnswer = true;
 				}
 			} else {
@@ -64,18 +67,6 @@
 			timeLeft = TIME_PENALTY;
 			localStorage.setItem(`timeLeft-${team.teamId}`, '' + new Date().getTime());
 			setTimer();
-			return;
-		}
-
-		if (team.solved + 1 >= MAX_PROBLEMS) {
-			// Terminaste
-			await supabase
-				.from<ITeams>('teams')
-				.update({ hasSolvedYet: true, solved: team.solved + 1, timeEnd: new Date() })
-				.eq('teamId', team.teamId);
-
-			_team.set({ ...$_team, timeEnd: new Date() });
-			goto('/finish');
 			return;
 		}
 
@@ -104,6 +95,11 @@
 	}
 </script>
 
+{#if !browser}
+	<div class="text-center flex flex-col items-center my-9">
+		<Circle2 colorInner="#ffffff" />
+	</div>
+{/if}
 {#if !team.hasSolvedYet}
 	{#if browser}
 		<div
